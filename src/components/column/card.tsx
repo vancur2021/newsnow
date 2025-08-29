@@ -227,6 +227,7 @@ function NewsUpdatedTime({ date }: { date: string | number }) {
 }
 function NewsListHot({ items }: { items: NewsItem[] }) {
   const { width } = useWindowSize()
+  const isMobile = width < 768
   return (
     <ol className="flex flex-col gap-2">
       {items?.map((item, i) => (
@@ -237,7 +238,8 @@ function NewsListHot({ items }: { items: NewsItem[] }) {
           title={item.extra?.hover}
           className={$(
             "flex gap-2 items-start items-stretch relative cursor-pointer [&_*]:cursor-pointer transition-all",
-            "hover:bg-neutral-400/10 rounded-md pr-1 visited:(text-neutral-400)",
+            !isMobile && "hover:bg-neutral-400/10",
+            "rounded-md pr-1 visited:(text-neutral-400)",
           )}
         >
           <span className={$("bg-neutral-400/10 min-w-6 flex justify-center items-center rounded-md text-sm h-6 flex-shrink-0")}>
@@ -260,6 +262,7 @@ function NewsListHot({ items }: { items: NewsItem[] }) {
 
 function NewsListTimeLine({ items }: { items: NewsItem[] }) {
   const { width } = useWindowSize()
+  const isMobile = width < 768
   return (
     <ol className="border-s border-neutral-400/50 flex flex-col ml-1">
       {items?.map(item => (
@@ -275,7 +278,8 @@ function NewsListTimeLine({ items }: { items: NewsItem[] }) {
           </span>
           <a
             className={$(
-              "ml-2 px-1 hover:bg-neutral-400/10 rounded-md visited:(text-neutral-400/80)",
+              "ml-2 px-1 rounded-md visited:(text-neutral-400/80)",
+              !isMobile && "hover:bg-neutral-400/10",
               "cursor-pointer [&_*]:cursor-pointer transition-all",
             )}
             href={width < 768 ? item.mobileUrl || item.url : item.url}
