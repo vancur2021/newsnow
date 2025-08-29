@@ -4,8 +4,7 @@ import type { BaseEventPayload, ElementDragType } from "@atlaskit/pragmatic-drag
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge"
 import { reorderWithEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/util/reorder-with-edge"
 import { createPortal } from "react-dom"
-import { useThrottleFn } from "ahooks"
-import { useAutoAnimate } from "@formkit/auto-animate/react"
+import { useDebounceFn, useThrottleFn } from "ahooks"
 import { motion } from "framer-motion"
 import { useWindowSize } from "react-use"
 import { isMobile } from "react-device-detect"
@@ -20,7 +19,6 @@ const AnimationDuration = 200
 const WIDTH = 350
 export function Dnd() {
   const [items, setItems] = useAtom(currentSourcesAtom)
-  const [parent] = useAutoAnimate({ duration: AnimationDuration })
   useEntireQuery(items)
   const { width } = useWindowSize()
   const minWidth = useMemo(() => {
@@ -28,20 +26,35 @@ export function Dnd() {
     return Math.min(width - 32, WIDTH)
   }, [width])
 
+  const scrollContainerRef = useRef<HTMLOListElement>(null)
+
+  const { run: handleScrollEnd } = useDebounceFn(() => {
+    scrollContainerRef.current?.classList.remove("is-scrolling")
+  }, { wait: 150 })
+
+  const handleScroll = () => {
+    scrollContainerRef.current?.classList.add("is-scrolling")
+    handleScrollEnd()
+  }
+
   if (!items.length) return null
 
   return (
     <DndWrapper items={items} setItems={setItems} isSingleColumn={isMobile}>
-      <OverlayScrollbar defer className="overflow-x-auto">
+      <OverlayScrollbar
+        defer
+        className="overflow-x-auto"
+        events={{
+          scroll: handleScroll,
+        }}
+      >
         <motion.ol
+          ref={scrollContainerRef}
           className={isMobile
             ? "flex px-2 gap-6 pb-4 scroll-smooth"
             : "grid w-full gap-6"}
-          ref={parent}
           style={isMobile
-            ? {
-                // 横向滚动布局
-              }
+            ? {}
             : {
                 gridTemplateColumns: `repeat(auto-fill, minmax(${minWidth}px, 1fr))`,
               }}

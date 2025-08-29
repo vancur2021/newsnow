@@ -70,3 +70,7 @@ button:disabled {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+.is-scrolling a {
+  pointer-events: none;
+}
