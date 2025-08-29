@@ -19,6 +19,7 @@ html.dark {
   color-scheme: dark;
 }
 
+html,
 body {
   --at-apply: color-base bg-base sprinkle-primary text-base;
   -moz-user-select: none;
