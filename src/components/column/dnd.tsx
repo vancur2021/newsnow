@@ -85,11 +85,6 @@ export function Dnd() {
           ))}
         </motion.ol>
       </OverlayScrollbar>
-      {isMobile && (
-        <div className="flex justify-center">
-          <span className="text-sm text-gray-500 text-center">左右滑动查看更多</span>
-        </div>
-      )}
     </DndWrapper>
   )
 }
